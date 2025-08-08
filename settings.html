@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Настройки Фанфика</title>
+  <style>
+    body {
+      background-color: #121212;
+      color: #f5f5f5;
+      font-family: sans-serif;
+      padding: 40px 20px;
+      margin: 0;
+    }
+
+    h1 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .form-container {
+      max-width: 700px;
+      margin: 0 auto;
+    }
+
+    label {
+      display: block;
+      margin-top: 20px;
+      font-size: 18px;
+    }
+
+    input {
+      width: 100%;
+      padding: 12px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      border: none;
+      border-radius: 8px;
+      background-color: #1e1e1e;
+      color: white;
+      font-size: 16px;
+    }
+
+    button {
+      margin-top: 30px;
+      padding: 15px 30px;
+      font-size: 18px;
+      background-color: #03a9f4;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      width: 100%;
+    }
+
+    .output {
+      margin-top: 40px;
+      background-color: #1e1e1e;
+      padding: 25px;
+      border-radius: 10px;
+      white-space: pre-wrap;
+      line-height: 1.6;
+    }
+
+    @media (max-width: 600px) {
+      h1 {
+        font-size: 24px;
+      }
+      label {
+        font-size: 16px;
+      }
+      input, button {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Настройки фанфика</h1>
+
+  <div class="form-container">
+    <label>Когда происходят события?</label>
+    <input type="text" id="when" />
+
+    <label>Где происходят события?</label>
+    <input type="text" id="where" />
+
+    <label>Что они делали?</label>
+    <input type="text" id="what" />
+
+    <label>Что произошло неожиданного?</label>
+    <input type="text" id="twist" />
+
+    <label>Что они сделали в конце?</label>
+    <input type="text" id="final" />
+
+    <button onclick="generateFanfic()">Генерировать фанфик</button>
+
+    <div id="output" class="output"></div>
+  </div>
+
+  <script>
+    const params = new URLSearchParams(window.location.search);
+    const rawC1 = params.get('c1');
+    const rawC2 = params.get('c2');
+
+    function decline(name, form) {
+      const cases = {
+        "Сергеич": {
+          gen: "Сергеича", dat: "Сергеичу", acc: "Сергеича", ins: "Сергеичем", abl: "о Сергеиче", short: "Сергеич" },
+        "Коля Вендин": {
+          gen: "Коли Вендина", dat: "Коле Вендину", acc: "Колю Вендина", ins: "Колей Вендиным", abl: "о Коле Вендине", short: "Коля" },
+        "Скрыган": {
+          gen: "Скрыгана", dat: "Скрыгану", acc: "Скрыгана", ins: "Скрыганом", abl: "о Скрыгане", short: "Скрыган" },
+        "Пилепенко": {
+          gen: "Пилепенко", dat: "Пилепенко", acc: "Пилепенко", ins: "Пилепенко", abl: "о Пилепенко", short: "Пилепенко" },
+        "Нестеровна": {
+          gen: "Нестеровны", dat: "Нестеровне", acc: "Нестеровну", ins: "Нестеровной", abl: "о Нестеровне", short: "Нестеровна" }
+      };
+      return cases[name]?.[form] || name;
+    }
+
+    function getOtherCharacter(c1, c2) {
+      const all = ["Сергеич", "Коля Вендин", "Скрыган", "Пилепенко", "Нестеровна"];
+      return all.find(name => name !== c1 && name !== c2);
+    }
+
+    function generateFanfic() {
+      const when = document.getElementById("when").value.trim();
+      const where = document.getElementById("where").value.trim();
+      const what = document.getElementById("what").value.trim();
+      const twist = document.getElementById("twist").value.trim();
+      const final = document.getElementById("final").value.trim();
+
+      if (!when || !where || !what || !twist || !final) {
+        alert("Пожалуйста, заполните все поля!");
+        return;
+      }
+
+      const c1 = rawC1;
+      const c2 = rawC2;
+      const c3 = getOtherCharacter(c1, c2);
+
+      const c1_short = decline(c1, 'short');
+      const c2_short = decline(c2, 'short');
+      const c3_ins = decline(c3, 'ins');
+      const c1_acc = decline(c1, 'acc');
+      const c2_acc = decline(c2, 'acc');
+
+      const story = `📖 ${when}, в ${where}, ${c1_short} и ${c2_short} собрались ${what}. Казалось бы — обычный день, ничем не отличающийся от предыдущих. Но всё изменилось, когда произошло следующее: ${twist}.
+
+Сначала они не придали этому значения. Но потом их взгляды стали чаще пересекаться. Словно бы то, что случилось, сдвинуло нечто глубоко внутри каждого.
+
+— Ты это тоже почувствовал? — спросил ${c1_short}, прервав тишину.
+— Да, и я больше не хочу это скрывать, — ответил ${c2_short}, подходя ближе.
+
+Их разговор перетёк в откровение. Стены, которые они так долго строили, рухнули за считаные секунды. Наступила пауза, но в ней было больше смысла, чем в сотне слов. И тогда, не сговариваясь, они поцеловались.
+
+Именно в этот момент в комнату вошёл ${c3_ins}. Он остановился, удивлённо посмотрел, и вдруг улыбнулся:
+— Я знал, что между вами нечто большее.
+
+Вечер продолжился признаниями, долгими объятиями, смехом и тихими обещаниями. ${c1_short} и ${c2_short} знали: теперь всё будет по-другому. И в конце, ${final}. Они больше не прятались от мира — и, главное, от самих себя.`;
+
+      document.getElementById("output").innerText = story;
+    }
+  </script>
+</body>
+</html>

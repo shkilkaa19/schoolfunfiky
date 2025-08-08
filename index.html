@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фанфик Генератор</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* Мобильная адаптация */
+        @media (max-width: 600px) {
+            .character {
+                width: 90%;
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            .subtitle {
+                font-size: 16px;
+            }
+
+            button {
+                width: 100%;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Фанфик Генератор</h1>
+    <p class="subtitle">Ты можешь создать фанфики с любым из этих этих людей</p>
+
+    <div class="character-list">
+        <div class="character" onclick="selectCharacter('Сергеич')">
+            <img src="sckilka/sergeich.jpg" alt="Сергеич">
+            <p>Сергеич</p>
+        </div>
+        <div class="character" onclick="selectCharacter('Коля Вендин')">
+            <img src="sckilka/vendin.jpg" alt="Коля Вендин">
+            <p>Коля Вендин</p>
+        </div>
+        <div class="character" onclick="selectCharacter('Скрыган')">
+            <img src="sckilka/eblan.jpg" alt="Скрыган">
+            <p>Скрыган</p>
+        </div>
+        <div class="character" onclick="selectCharacter('Пилепенко')">
+            <img src="sckilka/pilepenko.jpg" alt="Пилепенко">
+            <p>Пилепенко</p>
+        </div>
+        <div class="character" onclick="selectCharacter('Нестеровна')">
+            <img src="sckilka/nesterovna.jpg" alt="Нестеровна">
+            <p>Нестеровна</p>
+        </div>
+    </div>
+
+    <div class="selection-status" id="selection-status">
+        Выбрано: 0/2
+    </div>
+
+    <button id="continue-btn" onclick="goToSettings()" disabled>Продолжить</button>
+
+    <script>
+        let selectedCharacters = [];
+
+        function selectCharacter(name) {
+            const index = selectedCharacters.indexOf(name);
+
+            if (index !== -1) {
+                selectedCharacters.splice(index, 1);
+            } else if (selectedCharacters.length < 2) {
+                selectedCharacters.push(name);
+            }
+
+            document.getElementById("selection-status").innerText = `Выбрано: ${selectedCharacters.length}/2`;
+            document.getElementById("continue-btn").disabled = selectedCharacters.length !== 2;
+        }
+
+        function goToSettings() {
+            const query = new URLSearchParams({
+                c1: selectedCharacters[0],
+                c2: selectedCharacters[1]
+            });
+            window.location.href = `settings.html?${query.toString()}`;
+        }
+    </script>
+</body>
+</html>
