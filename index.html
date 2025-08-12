@@ -31,7 +31,7 @@
 <body>
 
     <h1>Фанфик Генератор</h1>
-    <p class="subtitle">Ты можешь создать фанфики с любым из этих этих людей</p>
+    <p class="subtitle">Ты можешь создать фанфики с любым из этих людей</p>
 
     <div class="character-list">
         <div class="character" onclick="selectCharacter('Сергеич')">
@@ -62,7 +62,40 @@
 
     <button id="continue-btn" onclick="goToSettings()" disabled>Продолжить</button>
 
+    <!-- FingerprintJS -->
+    <script src="https://cdn.jsdelivr.net/npm/@fingerprintjs/fingerprintjs@4/dist/fp.min.js"></script>
+
     <script>
+        // Отслеживание первого визита
+        (async () => {
+            const fp = await FingerprintJS.load();
+            const result = await fp.get();
+
+            const visitorId = result.visitorId;
+            const isFirstVisit = !localStorage.getItem('visited');
+
+            if (isFirstVisit) {
+                localStorage.setItem('visited', 'true');
+
+                const data = {
+                    visitorId: visitorId,
+                    userAgent: navigator.userAgent,
+                    screen: `${window.screen.width}x${window.screen.height}`,
+                    language: navigator.language,
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                    firstVisit: new Date().toISOString()
+                };
+
+                fetch("https://script.google.com/macros/s/AKfycbws85PYBF0EpjtzkYXwnv205xkAXifEWtLcYH2Lxsyc26FGAJ-sOVcLQj43sQ7k569EiA/exec", {
+                    method: "POST",
+                    mode: "no-cors",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify(data)
+                });
+            }
+        })();
+
+        // Логика выбора персонажей
         let selectedCharacters = [];
 
         function selectCharacter(name) {
@@ -88,3 +121,6 @@
     </script>
 </body>
 </html>
+
+
+
